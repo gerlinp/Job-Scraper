@@ -13,9 +13,15 @@ async def scrape_indeed():
     await page.waitForSelector('#text-input-what')
     await page.waitForSelector('#text-input-where')
 
+        # Clear input fields
+    await page.evaluate('''() => {
+        document.querySelector('#text-input-what').value = '';
+        document.querySelector('#text-input-where').value = '';
+    }''')
+
 
     await page.type('#text-input-what', 'Software Engineer')
-    await page.type('#text-input-where', 'USA')
+    await page.type('#text-input-where', 'Rhode Island')
 
 
     await page.click('button[type="submit"]')
@@ -26,6 +32,11 @@ async def scrape_indeed():
 
     job_listings = await page.querySelectorAll('.resultContent')
     for job in job_listings:
+
+        # Extract the link
+        # link_element = await job.querySelector('h2.jobTitle a')
+        # link = await page.evaluate('(element) => element.href', link_element)
+
         # Extract the job title
         title_element = await job.querySelector('h2.jobTitle span[title]')
         title = await page.evaluate('(element) => element.textContent', title_element)
